@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>今日の気分で作る、世界に1本の酒</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+            color: #333;
+        }
+
+        .hero-section {
+            position: relative;
+            height: 350px;
+            background: url('https://sspark.genspark.ai/cfimages?u1=WkQ9Zx4VUuFrahdZAAfPpeCVik%2BLaLxQIx0IKi67KpiDIO6n7%2FKYLUANDDayafhrNdnaWhgnQTDHyeGa1jKlgOvDi%2Br9XGt8llYh2Yslbz2cjtZcYLYRzVNNXAOHdf2%2Fy6TRZZ%2F%2BkdVHgydn23Igpk3XcdyKaZccSI533tc2XeIfS6pi6StXFz2mpDP2J64%3D&u2=zwec38XcPVtukuYj&width=2560') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 30px;
+        }
+
+        .hero-content h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+            line-height: 1.4;
+        }
+
+        .hero-content .subtitle {
+            font-size: 16px;
+            opacity: 0.95;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .hero-icon {
+            font-size: 60px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* プログレスバー */
+        .progress-section {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .level-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 3px 10px rgba(255, 215, 0, 0.4);
+        }
+
+        .exp-text {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 25px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px 30px 0 0;
+            box-shadow: 0 -5px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            position: relative;
+            z-index: 3;
+            min-height: calc(100vh - 320px);
+        }
+
+        .content {
+            padding: 30px 20px 40px;
+        }
+
+        .section {
+            margin-bottom: 35px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #f0f0f0;
+            position: relative;
+        }
+
+        .section-title .icon {
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        .section-title .count-badge {
+            margin-left: auto;
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* 励ましメッセージ */
+        .encouragement {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+            color: #333;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(132, 250, 176, 0.3);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .mood-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .mood-btn, .base-btn {
+            padding: 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            text-align: center;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .mood-btn:hover, .base-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .mood-btn.active, .base-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .mood-btn.recommended::after, .base-btn.recommended::after {
+            content: '🔥';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 24px;
+            animation: recommend-pulse 1.5s infinite;
+        }
+
+        @keyframes recommend-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .custom-mood {
+            margin-top: 15px;
+        }
+
+        .custom-mood input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        .custom-mood input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .ingredients {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .ingredient-tag {
+            padding: 12px 18px;
+            background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #e0e0e0;
+            font-size: 15px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .ingredient-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #f093fb;
+        }
+
+        .ingredient-tag.selected {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-color: #f5576c;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+            transform: scale(1.05);
+        }
+
+        .ingredient-tag.new::before {
+            content: 'NEW';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4757;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .base-drinks {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .base-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .base-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .base-btn:hover::before {
+            left: 100%;
+        }
+
+        /* ランダム提案ボタン */
+        .random-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+            transition: all 0.3s;
+        }
+
+        .random-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(240, 147, 251, 0.5);
+        }
+
+        .slider-container {
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 15px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .slider-label .value {
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #e9ecef 0%, #dee2e6 100%);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
+            border: 3px solid white;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 19px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .recipe-result {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            display: none;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            border: 3px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .recipe-result.show {
+            display: block;
+            animation: celebration 0.8s ease-out;
+        }
+
+        @keyframes celebration {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .recipe-result h3 {
+            margin-bottom: 20px;
+            color: #c73866;
+            font-size: 22px;
+            text-align: center;
+        }
+
+        .recipe-result p {
+            margin: 10px 0;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        /* 実績バッジ */
+        .achievement-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 6px 30px rgba(255, 215, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            animation: achievementSlide 0.5s ease-out;
+        }
+
+        @keyframes achievementSlide {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .achievement-popup.show {
+            display: block;
+        }
+
+        .achievement-icon {
+            font-size: 50px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .achievement-text {
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* 紙吹雪エフェクト */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            position: absolute;
+            animation: confetti-fall 3s linear;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .saved-recipes {
+            margin-top: 30px;
+        }
+
+        .recipe-card {
+            background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .recipe-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .recipe-card h4 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .recipe-card p {
+            font-size: 14px;
+            color: #666;
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .recipe-card .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin: 5px 5px 5px 0;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .recipe-card .delete-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 12px;
+            font-size: 13px;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
+        }
+
+        .recipe-card .delete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .tab-buttons {
+            display: flex;
+            background: #f0f0f0;
+            border-radius: 15px;
+            padding: 6px;
+            margin: 20px 20px 0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #666;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn .notification-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: #ff4757;
+            border-radius: 50%;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tips {
+            background: linear-gradient(135deg, #fff3cd 0%, #fff8e1 100%);
+            padding: 18px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .tips p {
+            font-size: 14px;
+            color: #856404;
+            line-height: 1.7;
+        }
+
+        /* 統計情報 */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px 15px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .feature-section {
+            background: url('https://sspark.genspark.ai/cfimages?u1=kIa3SdwNJNRU5MwBG0KsrRk0%2BBT4EEHdK6IaJiUGfjozRnFLQ18YUqI4kHGc7D3GvR7%2FziMLQ%2F4oRMUKeOUEHnoylYAnkWP1ihExOCnBOgI3%2FJnkajavX2EhKm2vL9REmmsuJfxJOPx5YqsfhoW0ghIfwpW38koidD3mqqIB&u2=nymlO%2FDjBs1UUNvP&width=2560') center/cover no-repeat;
+            border-radius: 15px;
+            padding: 30px 20px;
+            margin: 25px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+        }
+
+        .feature-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            text-align: center;
+        }
+
+        .feature-content h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .feature-content p {
+            font-size: 15px;
+            line-height: 1.7;
+            opacity: 0.95;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        /* ツールチップ */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 26px;
+            }
+            
+            .mood-buttons, .base-drinks {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-section {
+                height: 300px;
+            }
+
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 実績ポップアップ -->
+    <div class="achievement-popup" id="achievementPopup">
+        <div class="achievement-icon" id="achievementIcon">🏆</div>
+        <div class="achievement-text" id="achievementText">実績解除!</div>
+    </div>
+
+    <!-- ヒーローセクション -->
+    <div class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-icon">🍶</div>
+            <h1>今日の気分で作る<br>世界に1本の酒</h1>
+            <p class="subtitle">飲みながら、気軽に、自分だけの一杯を</p>
+        </div>
+    </div>
+
+    <!-- プログレスセクション -->
+    <div class="progress-section">
+        <div class="level-info">
+            <div class="level-badge" id="levelBadge">🍶 初心者バーテンダー Lv.1</div>
+            <div class="exp-text" id="expText">0/3 EXP</div>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar" style="width: 0%;">
+                <span id="progressPercent"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="switchTab('create')">
+                🎨 作る
+                <span class="notification-dot" id="createDot" style="display: none;"></span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('list')">
+                📚 レシピ一覧
+                <span class="notification-dot" id="listDot" style="display: none;"></span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('stats')">
+                📊 統計
+            </button>
+        </div>
+
+        <div id="create-tab" class="tab-content active">
+            <div class="content">
+                <!-- 励ましメッセージ -->
+                <div class="encouragement" id="encouragement">
+                    😊 今日も一杯作ってみよか!
+                </div>
+
+                <!-- 気分選択 -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">🎭</span>
+                        今日の気分は?
+                        <span class="count-badge" id="moodCount">0/1</span>
+                    </div>
+                    <div class="mood-buttons" id="moodButtons">
+                        <button class="mood-btn" onclick="selectMood('ちょい疲れてる')">😮‍💨 ちょい疲れてる</button>
+                        <button class="mood-btn" onclick="selectMood('テンション高め')">🎉 テンション高め</button>
+                        <button class="mood-btn" onclick="selectMood('記念日でええ感じ')">💝 記念日でええ感じ</button>
+                        <button class="mood-btn" onclick="selectMood('語りたい夜')">💬 語りたい夜</button>
+                        <button class="mood-btn" onclick="selectMood('黙って飲みたい')">🤫 黙って飲みたい</button>
+                        <button class="mood-btn" onclick="selectMood('ちょっと冒険したい')">🚀 ちょっと冒険したい</button>
+                    </div>
+                    <div class="custom-mood">
+                        <input type="text" id="customMood" placeholder="✍️ 自分の気分を入力してもええで">
+                    </div>
+                </div>
+
+                <!-- 素材選択 -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">🌿</span>
+                        手元にある素材
+                        <span class="count-badge" id="ingredientCount">0/14</span>
+                    </div>
+                    <button class="random-btn" onclick="randomIngredients()">
+                        🎲 ランダムに素材を選ぶ (おすすめ3つ)
+                    </button>
+                    <div class="ingredients">
+                        <div class="ingredient-tag" onclick="toggleIngredient(this, 'レモン')">🍋 レモン</div>
+                        <div class="ingredient-tag" onclick="toggleIngredient(this, 'ライム')">🟢 ライム</div>
+                        <div class="ingredient-tag" onclick="toggleIngredient(this, 'オレンジ')">🍊 オレンジ</div>
+                        <div class="ingredient-tag" onclick="toggleIngredient(this, 'グレープフルーツ')">🍊 グレープフルーツ</div>
+                        <div class="ingredient-tag" onclick="toggleIngredient(this, '柚子')">🍊 柚子</div>
+                        <div class="ingredient-tag" onclick="toggleIngredient(this, 'ミント')">🌿 ミント</div>
+                        <div class="ingredient-tag" onclick="toggleIngredient(this, 'バジル')">🌿 バジル</div>
+                        <div class="ingredient-tag" onclick="toggleIngredient(this, 'ジンジャー')">🫚 ジンジャー</div>
+                        <div class="ingredient-tag" onclick="toggleIngredient(this, 'シナモン')">🍂 シナモン</div>
+                        <div class="ingredient-tag" onclick="toggleIngredient(this, 'ハチミツ')">🍯 ハチミツ</div>
+                        <div class="ingredient-tag" onclick="toggleIngredient(this, 'シロップ')">🧪 シロップ</div>
+                        <div class="ingredient-tag" onclick="toggleIngredient(this, '炭酸水')">💧 炭酸水</div>
+                        <div class="ingredient-tag" onclick="toggleIngredient(this, '醤油')">🥢 醤油</div>
+                        <div class="ingredient-tag" onclick="toggleIngredient(this, 'わさび')">🟢 わさび</div>
+                    </div>
+                </div>
+
+                <!-- ベースのお酒 -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">🍶</span>
+                        ベースのお酒
+                        <span class="count-badge" id="baseCount">0/1</span>
+                    </div>
+                    <button class="random-btn" onclick="randomBase()">
+                        🎲 ランダムにお酒を選ぶ
+                    </button>
+                    <div class="base-drinks" id="baseDrinks">
+                        <button class="base-btn" onclick="selectBase('ビール')">🍺 ビール</button>
+                        <button class="base-btn" onclick="selectBase('ワイン(赤)')">🍷 ワイン(赤)</button>
+                        <button class="base-btn" onclick="selectBase('ワイン(白)')">🥂 ワイン(白)</button>
+                        <button class="base-btn" onclick="selectBase('日本酒')">🍶 日本酒</button>
+                        <button class="base-btn" onclick="selectBase('焼酎')">🥃 焼酎</button>
+                        <button class="base-btn" onclick="selectBase('ウイスキー')">🥃 ウイスキー</button>
+                        <button class="base-btn" onclick="selectBase('ジン')">🍸 ジン</button>
+                        <button class="base-btn" onclick="selectBase('ウォッカ')">🍸 ウォッカ</button>
+                        <button class="base-btn" onclick="selectBase('ラム')">🍹 ラム</button>
+                        <button class="base-btn" onclick="selectBase('梅酒')">🍑 梅酒</button>
+                    </div>
+                </div>
+
+                <!-- 配合調整 -->
+                <div class="section" id="mixSection" style="display: none;">
+                    <div class="section-title">
+                        <span class="icon">🎚️</span>
+                        配合を調整
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>ベースの量</span>
+                            <span class="value" id="baseAmount">100ml</span>
+                        </div>
+                        <input type="range" class="slider" min="50" max="200" value="100" id="baseSlider" oninput="updateAmount('base', this.value)">
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>素材の量</span>
+                            <span class="value" id="ingredientAmount">50ml</span>
+                        </div>
+                        <input type="range" class="slider" min="10" max="100" value="50" id="ingredientSlider" oninput="updateAmount('ingredient', this.value)">
+                    </div>
+                </div>
+
+                <div class="tips">
+                    <p>💡 <strong>ポイント:</strong> 正解はありません！失敗もネタになる。「これアリやな」と思ったら保存してな。</p>
+                </div>
+
+                <button class="btn-primary" onclick="createRecipe()">
+                    <span style="position: relative; z-index: 1;">✨ 世界に1本の酒を作る</span>
+                </button>
+
+                <!-- レシピ結果 -->
+                <div class="recipe-result" id="recipeResult">
+                    <h3>🎉 完成しました!</h3>
+                    <div id="resultContent"></div>
+                    <button class="btn-primary" style="margin-top: 20px;" onclick="saveRecipe()">
+                        <span style="position: relative; z-index: 1;">💾 このレシピを保存する</span>
+                    </button>
+                </div>
+
+                <!-- 特徴セクション -->
+                <div class="feature-section">
+                    <div class="feature-content">
+                        <h3>✨ あなただけの体験を</h3>
+                        <p>「うちの奥さん、お酒めっちゃ好きやねん」<br>
+                        そんな人が、記念日に「世界に1本だけのお酒やねん」と渡せたら、<br>
+                        それだけでもう半分勝ちです。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="list-tab" class="tab-content">
+            <div class="content">
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">📚</span>
+                        保存したレシピ
+                    </div>
+                    <div id="savedRecipesList">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🍶</div>
+                            <p>まだレシピがありません。<br>さあ、最初の一杯を作ってみよか!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="stats-tab" class="tab-content">
+            <div class="content">
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">📊</span>
+                        あなたの統計
+                    </div>
+                    <div class="stats-section">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalRecipes">0</div>
+                            <div class="stat-label">作ったレシピ</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalIngredients">0</div>
+                            <div class="stat-label">使った素材種類</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalBases">0</div>
+                            <div class="stat-label">試したお酒</div>
+                        </div>
+                    </div>
+
+                    <div class="section-title" style="margin-top: 30px;">
+                        <span class="icon">🏆</span>
+                        獲得した実績
+                    </div>
+                    <div id="achievementsList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMood = '';
+        let selectedIngredients = [];
+        let currentBase = '';
+        let currentRecipe = null;
+        let userLevel = 1;
+        let userExp = 0;
+        let usedIngredients = new Set();
+        let usedBases = new Set();
+
+        // 励ましメッセージ
+        const encouragements = [
+            "😊 今日も一杯作ってみよか!",
+            "🎉 ええ感じやで！次も頑張ろ!",
+            "✨ もう一杯作ってみひん?",
+            "🔥 調子ええやん！どんどんいこ!",
+            "💪 あと少しでレベルアップやで!",
+            "🌟 君、才能あるわ!",
+            "🎊 最高の一杯が待ってるで!",
+            "🚀 冒険心、ええやん!",
+            "💝 今日は特別な一杯を作ろか?",
+            "🍶 もっとええの作れるで!"
+        ];
+
+        // 実績定義
+        const achievements = {
+            first_recipe: { name: "はじめての一杯", icon: "🍶", desc: "最初のレシピを作成", unlocked: false },
+            five_recipes: { name: "バーテンダー見習い", icon: "🍸", desc: "5つのレシピを作成", unlocked: false },
+            ten_recipes: { name: "一流バーテンダー", icon: "🏆", desc: "10個のレシピを作成", unlocked: false },
+            adventurous: { name: "冒険者", icon: "🚀", desc: "5種類以上の素材を使用", unlocked: false },
+            master: { name: "調合マスター", icon: "👑", desc: "全種類のお酒を試す", unlocked: false },
+            creative: { name: "クリエイター", icon: "🎨", desc: "3種類以上の組み合わせを試す", unlocked: false }
+        };
+
+        // 初期化
+        window.onload = function() {
+            loadUserData();
+            updateUI();
+            displaySavedRecipes();
+            showRandomEncouragement();
+            recommendDaily();
+        }
+
+        function loadUserData() {
+            userLevel = parseInt(localStorage.getItem('userLevel') || '1');
+            userExp = parseInt(localStorage.getItem('userExp') || '0');
+            usedIngredients = new Set(JSON.parse(localStorage.getItem('usedIngredients') || '[]'));
+            usedBases = new Set(JSON.parse(localStorage.getItem('usedBases') || '[]'));
+            
+            const savedAchievements = JSON.parse(localStorage.getItem('achievements') || '{}');
+            Object.keys(savedAchievements).forEach(key => {
+                if (achievements[key]) {
+                    achievements[key].unlocked = savedAchievements[key];
+                }
+            });
+        }
+
+        function saveUserData() {
+            localStorage.setItem('userLevel', userLevel);
+            localStorage.setItem('userExp', userExp);
+            localStorage.setItem('usedIngredients', JSON.stringify([...usedIngredients]));
+            localStorage.setItem('usedBases', JSON.stringify([...usedBases]));
+            
+            const achievementsState = {};
+            Object.keys(achievements).forEach(key => {
+                achievementsState[key] = achievements[key].unlocked;
+            });
+            localStorage.setItem('achievements', JSON.stringify(achievementsState));
+        }
+
+        function updateUI() {
+            const expNeeded = userLevel * 3;
+            const progress = (userExp / expNeeded) * 100;
+            
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressPercent').textContent = Math.round(progress) + '%';
+            document.getElementById('expText').textContent = `${userExp}/${expNeeded} EXP`;
+            
+            let levelTitle = '';
+            if (userLevel === 1) levelTitle = '🍶 初心者バーテンダー';
+            else if (userLevel <= 3) levelTitle = '🍸 見習いバーテンダー';
+            else if (userLevel <= 5) levelTitle = '🏆 熟練バーテンダー';
+            else if (userLevel <= 8) levelTitle = '👑 マスターバーテンダー';
+            else levelTitle = '⭐ 伝説のバーテンダー';
+            
+            document.getElementById('levelBadge').textContent = `${levelTitle} Lv.${userLevel}`;
+        }
+
+        function addExp(amount) {
+            userExp += amount;
+            const expNeeded = userLevel * 3;
+            
+            if (userExp >= expNeeded) {
+                userExp = userExp - expNeeded;
+                userLevel++;
+                showAchievement('🎉', `レベルアップ! Lv.${userLevel}になりました!`);
+                createConfetti();
+            }
+            
+            updateUI();
+            saveUserData();
+        }
+
+        function showRandomEncouragement() {
+            const msg = encouragements[Math.floor(Math.random() * encouragements.length)];
+            document.getElementById('encouragement').textContent = msg;
+        }
+
+        function recommendDaily() {
+            // ランダムに1つの気分ボタンを推奨
+            const moodButtons = document.querySelectorAll('.mood-btn');
+            const randomMood = moodButtons[Math.floor(Math.random() * moodButtons.length)];
+            randomMood.classList.add('recommended');
+            
+            // ランダムに1つのお酒を推奨
+            const baseButtons = document.querySelectorAll('.base-btn');
+            const randomBase = baseButtons[Math.floor(Math.random() * baseButtons.length)];
+            randomBase.classList.add('recommended');
+        }
+
+        function selectMood(mood) {
+            currentMood = mood;
+            document.getElementById('customMood').value = '';
+            const buttons = document.querySelectorAll('.mood-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('moodCount').textContent = '1/1 ✓';
+            showRandomEncouragement();
+        }
+
+        function toggleIngredient(element, ingredient) {
+            element.classList.toggle('selected');
+            if (selectedIngredients.includes(ingredient)) {
+                selectedIngredients = selectedIngredients.filter(i => i !== ingredient);
+            } else {
+                selectedIngredients.push(ingredient);
+                usedIngredients.add(ingredient);
+            }
+            
+            document.getElementById('ingredientCount').textContent = `${selectedIngredients.length}/14`;
+            updateMixSection();
+            saveUserData();
+        }
+
+        function selectBase(base) {
+            currentBase = base;
+            const buttons = document.querySelectorAll('.base-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            usedBases.add(base);
+            document.getElementById('baseCount').textContent = '1/1 ✓';
+            updateMixSection();
+            saveUserData();
+        }
+
+        function randomIngredients() {
+            // 現在の選択をクリア
+            document.querySelectorAll('.ingredient-tag').forEach(tag => {
+                tag.classList.remove('selected');
+            });
+            selectedIngredients = [];
+            
+            // ランダムに3つ選択
+            const allIngredients = document.querySelectorAll('.ingredient-tag');
+            const indices = [];
+            while (indices.length < 3) {
+                const idx = Math.floor(Math.random() * allIngredients.length);
+                if (!indices.includes(idx)) {
+                    indices.push(idx);
+                }
+            }
+            
+            indices.forEach(idx => {
+                allIngredients[idx].click();
+            });
+            
+            showAchievement('🎲', 'ランダムに素材を選びました!');
+        }
+
+        function randomBase() {
+            const allBases = document.querySelectorAll('.base-btn');
+            const randomIdx = Math.floor(Math.random() * allBases.length);
+            allBases[randomIdx].click();
+            
+            showAchievement('🎲', 'ランダムにお酒を選びました!');
+        }
+
+        function updateMixSection() {
+            if (currentBase && selectedIngredients.length > 0) {
+                document.getElementById('mixSection').style.display = 'block';
+                document.getElementById('mixSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function updateAmount(type, value) {
+            if (type === 'base') {
+                document.getElementById('baseAmount').textContent = value + 'ml';
+            } else {
+                document.getElementById('ingredientAmount').textContent = value + 'ml';
+            }
+        }
+
+        function createRecipe() {
+            const customMoodValue = document.getElementById('customMood').value;
+            const finalMood = customMoodValue || currentMood;
+
+            if (!finalMood) {
+                alert('気分を選んでな!');
+                return;
+            }
+
+            if (selectedIngredients.length === 0) {
+                alert('素材を選んでな!');
+                return;
+            }
+
+            if (!currentBase) {
+                alert('ベースのお酒を選んでな!');
+                return;
+            }
+
+            const baseAmount = document.getElementById('baseSlider').value;
+            const ingredientAmount = document.getElementById('ingredientSlider').value;
+
+            const recipeName = generateRecipeName(finalMood, currentBase, selectedIngredients);
+
+            const recipe = {
+                name: recipeName,
+                mood: finalMood,
+                base: currentBase,
+                baseAmount: baseAmount + 'ml',
+                ingredients: selectedIngredients.join(', '),
+                ingredientAmount: ingredientAmount + 'ml',
+                date: new Date().toLocaleDateString('ja-JP'),
+                tips: generateTips(currentBase, selectedIngredients)
+            };
+
+            currentRecipe = recipe;
+
+            const resultHTML = `
+                <p style="font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 15px;">
+                    ✨ ${recipe.name}
+                </p>
+                <p><strong>🎭 気分:</strong> ${recipe.mood}</p>
+                <p><strong>🍶 ベース:</strong> ${recipe.base} (${recipe.baseAmount})</p>
+                <p><strong>🌿 素材:</strong> ${recipe.ingredients} (${recipe.ingredientAmount})</p>
+                <p style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.7); border-radius: 10px; border-left: 4px solid #667eea;">
+                    <strong>👨‍🍳 作り方のコツ:</strong><br>
+                    ${recipe.tips}
+                </p>
+            `;
+
+            document.getElementById('resultContent').innerHTML = resultHTML;
+            document.getElementById('recipeResult').classList.add('show');
+
+            // 紙吹雪
+            createConfetti();
+            
+            // 経験値追加
+            addExp(1);
+            
+            // 励ましメッセージ更新
+            showRandomEncouragement();
+
+            setTimeout(() => {
+                document.getElementById('recipeResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function generateRecipeName(mood, base, ingredients) {
+            const prefixes = ['大人の', '秘密の', '禁断の', '至高の', '究極の', '魅惑の', '伝説の', '幻の'];
+            const suffixes = ['カクテル', 'エリクサー', 'ブレンド', 'ミックス', 'スペシャル', 'デライト'];
+            
+            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+            const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+            const mainIngredient = ingredients[0];
+            
+            return `${prefix}${mainIngredient}${base}${suffix}`;
+        }
+
+        function generateTips(base, ingredients) {
+            const tips = [
+                `${base}に${ingredients[0]}を入れるとき、ちょっとずつ味見しながらやるとええで。`,
+                `最初に氷を入れて冷やしといたら、味がキリッと締まるで。`,
+                `${ingredients[0]}の香りを立たせたいなら、グラスの縁に絞ってみ。`,
+                `混ぜすぎんほうがええかもな。素材の味が立つで。`,
+                `ちょっと甘すぎたら炭酸水で割ってもええで。`,
+                `作った後、5分くらい馴染ませると味が変わるで。`,
+                `冷蔵庫で一晩寝かせたら、また違う味になるで試してみ。`,
+                `グラスを冷やしといたら、プロっぽい仕上がりになるで。`
+            ];
+            return tips[Math.floor(Math.random() * tips.length)];
+        }
+
+        function saveRecipe() {
+            if (!currentRecipe) return;
+
+            let recipes = JSON.parse(localStorage.getItem('myRecipes') || '[]');
+            currentRecipe.id = Date.now();
+            recipes.unshift(currentRecipe);
+            localStorage.setItem('myRecipes', JSON.stringify(recipes));
+
+            // 実績チェック
+            checkAchievements(recipes.length);
+
+            showAchievement('💾', '保存しました!レシピ一覧で確認できるで。');
+            displaySavedRecipes();
+            updateStats();
+        }
+
+        function checkAchievements(recipeCount) {
+            if (recipeCount >= 1 && !achievements.first_recipe.unlocked) {
+                achievements.first_recipe.unlocked = true;
+                showAchievement(achievements.first_recipe.icon, `実績解除: ${achievements.first_recipe.name}`);
+            }
+            
+            if (recipeCount >= 5 && !achievements.five_recipes.unlocked) {
+                achievements.five_recipes.unlocked = true;
+                showAchievement(achievements.five_recipes.icon, `実績解除: ${achievements.five_recipes.name}`);
+            }
+            
+            if (recipeCount >= 10 && !achievements.ten_recipes.unlocked) {
+                achievements.ten_recipes.unlocked = true;
+                showAchievement(achievements.ten_recipes.icon, `実績解除: ${achievements.ten_recipes.name}`);
+            }
+            
+            if (usedIngredients.size >= 5 && !achievements.adventurous.unlocked) {
+                achievements.adventurous.unlocked = true;
+                showAchievement(achievements.adventurous.icon, `実績解除: ${achievements.adventurous.name}`);
+            }
+            
+            if (usedBases.size >= 10 && !achievements.master.unlocked) {
+                achievements.master.unlocked = true;
+                showAchievement(achievements.master.icon, `実績解除: ${achievements.master.name}`);
+            }
+            
+            if (recipeCount >= 3 && !achievements.creative.unlocked) {
+                achievements.creative.unlocked = true;
+                showAchievement(achievements.creative.icon, `実績解除: ${achievements.creative.name}`);
+            }
+            
+            saveUserData();
+        }
+
+        function showAchievement(icon, text) {
+            const popup = document.getElementById('achievementPopup');
+            document.getElementById('achievementIcon').textContent = icon;
+            document.getElementById('achievementText').textContent = text;
+            
+            popup.classList.add('show');
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 3000);
+        }
+
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7', '#a29bfe'];
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 50);
+            }
+        }
+
+        function displaySavedRecipes() {
+            const recipes = JSON.parse(localStorage.getItem('myRecipes') || '[]');
+            const container = document.getElementById('savedRecipesList');
+
+            if (recipes.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🍶</div>
+                        <p>まだレシピがありません。<br>さあ、最初の一杯を作ってみよか!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = recipes.map(recipe => `
+                <div class="recipe-card">
+                    <h4>✨ ${recipe.name}</h4>
+                    ${recipe.id === recipes[0].id ? '<span class="badge">NEW!</span>' : ''}
+                    <p>📅 ${recipe.date}</p>
+                    <p>🎭 気分: ${recipe.mood}</p>
+                    <p>🍶 ${recipe.base} (${recipe.baseAmount}) + ${recipe.ingredients} (${recipe.ingredientAmount})</p>
+                    <p style="margin-top: 10px; font-size: 13px; color: #999;">💡 ${recipe.tips}</p>
+                    <button class="delete-btn" onclick="deleteRecipe(${recipe.id})">🗑️ 削除</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteRecipe(id) {
+            if (!confirm('このレシピを削除してええか?')) return;
+            
+            let recipes = JSON.parse(localStorage.getItem('myRecipes') || '[]');
+            recipes = recipes.filter(r => r.id !== id);
+            localStorage.setItem('myRecipes', JSON.stringify(recipes));
+            displaySavedRecipes();
+            updateStats();
+        }
+
+        function updateStats() {
+            const recipes = JSON.parse(localStorage.getItem('myRecipes') || '[]');
+            document.getElementById('totalRecipes').textContent = recipes.length;
+            document.getElementById('totalIngredients').textContent = usedIngredients.size;
+            document.getElementById('totalBases').textContent = usedBases.size;
+            
+            // 実績リスト表示
+            const achievementsList = document.getElementById('achievementsList');
+            achievementsList.innerHTML = Object.keys(achievements).map(key => {
+                const ach = achievements[key];
+                return `
+                    <div class="recipe-card" style="${ach.unlocked ? '' : 'opacity: 0.5;'}">
+                        <h4>${ach.icon} ${ach.name}</h4>
+                        <p>${ach.desc}</p>
+                        ${ach.unlocked ? '<span class="badge">達成済み</span>' : '<span class="badge" style="background: #ccc;">未達成</span>'}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            if (tab === 'create') {
+                event.target.classList.add('active');
+                document.getElementById('create-tab').classList.add('active');
+            } else if (tab === 'list') {
+                event.target.classList.add('active');
+                document.getElementById('list-tab').classList.add('active');
+                displaySavedRecipes();
+            } else if (tab === 'stats') {
+                event.target.classList.add('active');
+                document.getElementById('stats-tab').classList.add('active');
+                updateStats();
+            }
+        }
+    </script>
+</body>
+</html>
